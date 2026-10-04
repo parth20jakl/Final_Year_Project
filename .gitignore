@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ML / generated files
+runs/
+weights/
+
+# Large datasets
+dataset/
+
+
+# Archive folders   
+/archive (2)/
+/archive (3)/
+/archive (4)/
+/archive (5)/
+/archive (6)/
+
+
+# Temporary files
+*.tmp
+*.log
+
+# Claude local files
+.claude/
