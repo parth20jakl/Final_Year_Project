@@ -27,7 +27,7 @@ runs/
 weights/
 
 # Large datasets
-dataset/
+/dataset/
 
 
 # Archive folders   

@@ -36,3 +36,9 @@ See `docs/licensing.md`. Domain tags: `indian` (archives 2-6, Datacluster sample
 - Archive 4 images are web photos / low resolution; archive 3 has only 3 video sequences.
 - No night / heavy-motion / gate-camera coverage yet: collect the original permitted gate set and use it as the final test set.
 - Auto labels carry estimated error (see `auto_annotation_report.json`); they never touch val/test.
+
+## Update 2026-10-14: split v2
+- `split_v2.json` = v1 assignments unchanged + 2,704 Roboflow Indian images (domain `indian_external`) in **train only**. 552 Roboflow images that were near-duplicates (dHash <= 4) of val/test images were dropped. Val/test remain 281/281, 100% manual.
+- Built with `scripts/dataset/ingest_roboflow.py` (incremental; do not re-run `ingest.py`, the source archives are no longer on disk - see `procedural documentation/`).
+- Export: `python scripts/dataset/export_yolo.py --split v2 --include-auto --tag v2` -> `dataset/processed/yolo_v2`.
+- Pending human work: 407 images in `dataset/reports/review_queue.html` still need accept/reject decisions; ~300-500 own-gate test images still to be collected.

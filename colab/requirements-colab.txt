@@ -1,0 +1,8 @@
+# Pin exact versions once the first successful Colab run is recorded (pip freeze -> runs/<id>/env.json)
+ultralytics
+onnx
+onnxruntime
+onnxsim
+pyyaml
+opencv-python-headless
+pytest

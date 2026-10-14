@@ -1,0 +1,30 @@
+# Single source of truth for project-level settings. Hyper-parameters live in configs/*.yaml, never in code.
+project:
+  name: adaptive-kd-yolo-anpr-android
+  seed: 42
+  class_names: [license_plate]
+dataset:
+  version: v2            # exported to dataset/processed/yolo_v2 (split_v2.json)
+  split_file: dataset/splits/split_v2.json
+  yolo_root: dataset/processed/yolo_v2
+  imgsz: 640
+  max_side_export: 1280
+compute:
+  local:   {gpu: "RTX 2050 4GB", ram_gb: 8, workers: 2, cache: false, smoke_imgsz: 320, smoke_batch: 4, amp: true}
+  colab:   {gpu: "A100", workers: 8, cache: ram, amp: true, drive_root: /content/drive/MyDrive/anpr}
+models:
+  families: [yolov6, yolo11, yolo26]
+  student_size: n
+  teacher_size: s        # chosen empirically; m allowed for yolo11
+fgd:
+  enabled_by_default: false
+  lambda: {yolov6: null, yolo11: null, yolo26: null}   # tuned in Phase 3 (Colab)
+  taps: neck_p3_p4_p5
+filters:
+  order: [time, region, area]
+  time_interval_ms_sweep: [50, 75, 100, 150, 200]
+  region: {type: rect}
+  area: {method: frame_diff_lowres, threshold_pct: null}
+export:
+  format: onnx
+  runtime: onnxruntime-mobile
