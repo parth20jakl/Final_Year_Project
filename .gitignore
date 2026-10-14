@@ -44,3 +44,5 @@ weights/
 
 # Claude local files
 .claude/
+# local training venv
+.venv-train/
