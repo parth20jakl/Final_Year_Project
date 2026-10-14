@@ -4,9 +4,9 @@ project:
   seed: 42
   class_names: [license_plate]
 dataset:
-  version: v2            # exported to dataset/processed/yolo_v2 (split_v2.json)
-  split_file: dataset/splits/split_v2.json
-  yolo_root: dataset/processed/yolo_v2
+  version: v3            # Indian plates only; exported to dataset/processed/yolo_v3 (split_v3.json)
+  split_file: dataset/splits/split_v3.json
+  yolo_root: dataset/processed/yolo_v3
   imgsz: 640
   max_side_export: 1280
 compute:
