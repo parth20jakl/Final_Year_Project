@@ -24,3 +24,4 @@ A record of exactly what was done, and how, for every task in this project. One 
 | `phase1_step3d_roboflow_ingest_split_v2.md` | Phase 1 step 3d: incremental Roboflow ingest, split v2 (+2,704 train, 552 near-dups dropped) | 2026-10-14 |
 | `phase0_foundation.md` | Phase 0 status table (configs, Colab skeleton, compatibility matrix) | 2026-10-14 |
 | `phase1_step5a_v2_export_qc_and_fixes.md` | Phase 1 step 5a: v2 export, QC found leakage + rescale defect, fixes | 2026-10-14 |
+| `phase1_step5b_freeze_and_phase_closeout.md` | Phase 1 step 5b: clean QC, dataset_v2 frozen, git commit, Phase 1 status | 2026-10-14 |
