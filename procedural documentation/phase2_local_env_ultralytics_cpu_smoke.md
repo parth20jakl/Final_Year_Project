@@ -23,3 +23,7 @@ User decision: install ultralytics locally, CPU torch only, in a virtual environ
 
 ## Reproduce
 `.venv-train\Scripts\python.exe` + the commands above; smoke subset script not kept in repo (one-off).
+
+## Addendum 2026-10-14: dataset hand-off to Colab
+- User uploaded `dataset_v3.zip` to a Drive folder (ID 1CmwJB6IxwyJi0SQSC6JXJp4KiEar0Dgj) in an account that is not the one connected to this session (folder lookup: "not found"), so presence/size could not be verified from here.
+- `colab/train_colab_skeleton.ipynb` dataset cell now authenticates in Colab, finds `dataset_v3.zip` in that folder via the Drive API, downloads it, **verifies sha256 (f83368585d8e...)**, unzips to /content/data. Requirement: the Colab account must own or have Viewer access to the folder. Not executed yet.
