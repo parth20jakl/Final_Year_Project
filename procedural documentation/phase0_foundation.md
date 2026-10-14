@@ -14,3 +14,6 @@
 mkdir configs colab training export tests android
 # files written with the editor tools; no code executed
 ```
+
+## Update 2026-10-14
+Step 6 gate closed: the user approved `docs/compatibility_matrix.md` unchanged; matrix updated with approval note and local layer findings (yolo11n Detect = layer 23 fed by [16,19,22]).

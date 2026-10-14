@@ -1,6 +1,8 @@
-# Compatibility matrix (Phase 0 gate - REVIEW BEFORE ANY FULL TRAINING)
+# Compatibility matrix (Phase 0 gate)
 
-Status: draft 2026-10-14. Items marked **verify** are assumptions to confirm in the Phase 2/3 smoke tests; nothing here is a result.
+**Status: APPROVED by the project owner on 2026-10-14.** Full Colab training may start once the baselines/FGD scripts exist. Items marked **verify** remain assumptions to confirm in the Phase 2/3 smoke tests.
+
+Original draft note: Items marked **verify** are assumptions to confirm in the Phase 2/3 smoke tests; nothing here is a result.
 
 | Item | YOLOv6n | YOLO11n | YOLO26n |
 |---|---|---|---|
@@ -27,5 +29,10 @@ Status: draft 2026-10-14. Items marked **verify** are assumptions to confirm in 
 | ONNX export + parity | yes | optional |
 | Android build/test | yes | no |
 
-## Gate
-Reviewer approves: families, teacher sizes, tap strategy, per-family framework, YOLOv6 provenance policy, Colab-only heavy training.
+## Gate - approved 2026-10-14
+Approved without changes: (1) three families YOLOv6n / YOLO11n / YOLO26n, each baseline and FGD student; (2) same-family teachers one size larger (s; m optional for YOLO11); (3) Ultralytics for YOLO11/26, official YOLOv6 repo as a separate pipeline; (4) record YOLOv6 checkpoint provenance and prefer a non-self-distilled baseline; (5) neck P3/P4/P5 taps chosen per family, never a shared hard-coded index; (6) all heavy training and distillation on Colab, local for code/tests/export/app.
+
+## Local findings (2026-10-14, ultralytics 8.4.177, CPU)
+- yolo11n: 181 layers, 2.59M params, `Detect` is layer 23, fed by layers [16, 19, 22] (neck outputs, channels 64/128/256).
+- yolo26n: 2.57M params, `Detect` is layer 23. Its feeder layers and NMS-free head output must still be confirmed in Phase 3 (verify).
+- A 1-epoch CPU smoke test of yolo11n on 48 images at 320 px ran end to end (24 s). Not a baseline.
