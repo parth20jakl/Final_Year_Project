@@ -4,9 +4,9 @@ project:
   seed: 42
   class_names: [license_plate]
 dataset:
-  version: v3            # Indian plates only; exported to dataset/processed/yolo_v3 (split_v3.json)
-  split_file: dataset/splits/split_v3.json
-  yolo_root: dataset/processed/yolo_v3
+  version: v4            # Indian plates only; known label defects, fix before reported training (docs/dataset.md)
+  split_file: dataset/splits/split_v4.json
+  yolo_root: dataset/processed/yolo_v4
   imgsz: 640
   max_side_export: 1280
 compute:
@@ -28,3 +28,8 @@ filters:
 export:
   format: onnx
   runtime: onnxruntime-mobile
+plate:                   # spec: docs/plate_decoding.md
+  codes_file: configs/plate_codes.json
+  confirm_frames: null   # live mode: identical readings needed before logging; tune in Phase 5
+  log_export: csv
+  location_name: null    # set in the app

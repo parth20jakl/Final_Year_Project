@@ -1,19 +1,19 @@
 # Adaptive KD-YOLO ANPR on Android - Project Workflow and Technical Document
 
-Last updated: 2026-10-05. Companion files: `.claude/skills/anpr-fgd-android/references/*` (operating rules for the AI assistant), `docs/dataset.md`, `docs/licensing.md`.
+Last updated: 2026-11-27 (plate decoding and entry log added; Indian-only dataset v4). Companion files: `.claude/skills/anpr-fgd-android/references/*` (operating rules for the AI assistant), `docs/dataset.md`, `docs/licensing.md`.
 
 ---
 
 ## 1. Project summary
 
-A real-time **Automatic Number Plate Recognition (ANPR)** system for **institutional gates** (Indian plates) that runs **fully on an Android phone**. It compares three YOLO families - **YOLOv6n, YOLO11n, YOLO26n** - each as a plain baseline and as a student distilled with **Focal and Global Knowledge Distillation (FGD)**. A configurable **adaptive frame-filtering** stage (time, region, area) cuts unnecessary inference. Everything is evaluated in a controlled benchmark.
+A real-time **Automatic Number Plate Recognition (ANPR)** system for **institutional gates** (**Indian plates only**) that runs **fully on an Android phone**. It reads each plate, explains it (for `MH12CP5156`: Maharashtra, RTO MH12 Pune, series CP, number 5156) and logs when and where the vehicle was seen, for export to Excel. It compares three YOLO families - **YOLOv6n, YOLO11n, YOLO26n** - each as a plain baseline and as a student distilled with **Focal and Global Knowledge Distillation (FGD)**. A configurable **adaptive frame-filtering** stage (time, region, area) cuts unnecessary inference. Everything is evaluated in a controlled benchmark.
 
 **Research questions**
 1. Does FGD improve a nano detector's accuracy at no extra inference cost?
 2. Which family gives the best accuracy / latency / size trade-off on a real phone?
 3. How much compute can time / region / area filtering save without losing plates?
 
-**Deliverables:** frozen dataset, 6 trained models (3 baseline + 3 FGD), ONNX exports with parity proof, Android app, benchmark results and report.
+**Deliverables:** frozen dataset, 6 trained models (3 baseline + 3 FGD), ONNX exports with parity proof, Android app (with plate decoding and entry log export), benchmark results and report.
 
 **Hard rules (short):** FGD only (no logit KD), teacher exists at training time only, detection and OCR are separate modules, filters always emit a reason, data split by vehicle/plate/sequence, no fabricated results, licences recorded, configs in YAML, no cloud inference. Full list: `constraints.md` in the skill references.
 
@@ -90,7 +90,8 @@ DEPLOYMENT PLANE (Android phone, fully offline)
 
  Camera/Image -> [Time filter] -> [Region filter] -> [Area filter] -> Preprocess
               -> Detector (ONNX Runtime) -> NMS -> Crop -> (enhance?) -> OCR
-              -> PlateValidator -> UI + optional local log -> Benchmark logger
+              -> PlateValidator -> PlateDecoder -> UI -> local entry log (CSV for Excel)
+              -> Benchmark logger
 ```
 
 The teacher never reaches the phone. Only the student ONNX does.
@@ -120,11 +121,25 @@ The teacher never reaches the phone. Only the student ONNX does.
 | `Detector` interface | `YOLOv6Detector`, `YOLO11Detector`, `YOLO26Detector` -> common `DetectionResult(classId, confidence, x1, y1, x2, y2)`; runtime model switch; per-family output parser (YOLO26 is NMS-free) |
 | `PlateRecognizer` interface | `recognize(crop) -> PlateTextResult`; implementation chosen by bake-off |
 | `PlateValidator` | Configurable Indian plate patterns (not one hard-coded format) |
+| `PlateDecoder` | Splits the text into state, RTO code, series, number using `configs/plate_codes.json`; status `VALID / OFFICE_UNKNOWN / CORRECTED / UNRECOGNISED` |
+| `EntryLog` | One local row per accepted sighting (date, time, location, plate, decoded fields, confidences, model); CSV export for Excel |
 | `BenchmarkLogger` | Per-frame timings, skip counts, RAM; CSV/JSON export |
-| UI | Model selector, filter toggles/parameters, photo/live mode, result overlay, stats |
+| UI | Model selector, filter toggles/parameters, photo/live mode, result overlay with decoded plate, entry list and export, stats |
 
 ### 3.4 Filter order and semantics
 Time -> Region -> Area. Cheapest first. Each skipped frame carries its reason, so benchmark output can report detector FPS, effective system FPS and skip rate **separately**.
+
+### 3.5 Plate decoding and entry log
+Full specification: [plate_decoding.md](plate_decoding.md).
+
+| Part of `MH12CP5156` | Meaning |
+|---|---|
+| `MH` | State: Maharashtra |
+| `12` | RTO office: Pune (MH12) |
+| `CP` | Series |
+| `5156` | Vehicle number |
+
+The detector only finds the plate (one class). Meaning comes from OCR text plus a code table, so no retraining is needed. Delhi, BH-series, temporary and two-line plates have their own handling. Uncertain readings are flagged, never guessed. Each accepted sighting is stored on the phone with date, time and location and exported as CSV, which opens in Excel. Report OCR exact-match and decode accuracy separately from detection mAP.
 
 ---
 
@@ -257,10 +272,11 @@ Goal: model-agnostic, filterable, benchmarkable app. Tier: [L] (OCR training, if
 4. TimeFilter -> RegionFilter -> AreaFilter with `FilterDecision` reasons.
 5. OCR bake-off on cropped plates (PaddleOCR / ML Kit / Tesseract / custom); pick by measured accuracy and latency.
 6. `PlateValidator` with configurable patterns.
-7. Benchmark logger, CSV/JSON export.
-8. UI: model selector, filter controls, photo/live modes, overlay, stats.
-9. Unit tests: filters, ROI, parsing, scaling. Emulator for logic; physical phone for performance.
-Outputs: installable APK. Exit: all six models switchable on device; filters emit correct reasons; logs export.
+7. `PlateDecoder` (state, RTO, series, number) and `EntryLog` with CSV export for Excel; confirm a live reading over several frames before logging.
+8. Benchmark logger, CSV/JSON export.
+9. UI: model selector, filter controls, photo/live modes, overlay with decoded plate, entry list, stats.
+10. Unit tests: filters, ROI, parsing, decoding, scaling. Emulator for logic; physical phone for performance.
+Outputs: installable APK. Exit: all six models switchable on device; filters emit correct reasons; a scanned plate shows its state/RTO; entry and benchmark logs export.
 
 ### Phase 6 - Experiments and reporting
 Goal: honest, reproducible results. Tier: [L] on-phone, [C] extra training.
@@ -289,7 +305,7 @@ Outputs: results tables, graphs, report. Exit: every number traceable to a run r
 | Time overrun | Incomplete coverage | Priority order: dataset > baselines + FGD (>= 2 families) > app > benchmarks; say so openly |
 
 ## 8. Scope control
-One class, 640 px, ONNX Runtime only, three nano students. Excluded until the core works: INT8/NNAPI, vehicle detection, tracking, databases, cloud features, face recognition. Colab is for training only; the app is fully offline.
+One class, 640 px, ONNX Runtime only, three nano students, Indian plates only. Excluded until the core works: INT8/NNAPI, vehicle detection, tracking, server databases, cloud features, face recognition, owner lookup. The local entry log with CSV export is in scope. Colab is for training only; the app is fully offline.
 
 ## 9. Open decisions
 1. Kaggle token / Roboflow API key available?

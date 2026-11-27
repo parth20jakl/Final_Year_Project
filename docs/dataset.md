@@ -43,7 +43,14 @@ See `docs/licensing.md`. Domain tags: `indian` (archives 2-6, Datacluster sample
 - Export: `python scripts/dataset/export_yolo.py --split v2 --include-auto --tag v2` -> `dataset/processed/yolo_v2`.
 - Pending human work: 407 images in `dataset/reports/review_queue.html` still need accept/reject decisions; ~300-500 own-gate test images still to be collected.
 
-## Update 2026-10-14 (later): split v3 - Indian plates only (CURRENT)
+## Update 2026-11-27: split v4 (CURRENT)
+- Visual audit of v3 and of the unused mixed-country folders. 345 non-Indian images listed in `dataset/annotations/foreign_ids.json`; 6 of them were in v3 train (German and UK plates).
+- `split_v4.json` = v3 with the listed images excluded. `dataset/frozen/dataset_v4.zip`: train 4,314 (4,599 plates) / val 281 (315) / test 281 (306); QC no errors, no cross-split near-duplicates; sha256 `82b2b91a94898ff4829c7fc83078cf8e2f64a6be72626e3f9e7af40b9c092c8e`.
+- Commands: `purge_foreign.py --split-only`, `export_yolo.py --split v4 --include-auto --tag v4`, `qc.py --root dataset/processed/yolo_v4`, `freeze.py --tag v4 --name dataset_v4`.
+- **Pending (owner):** review `dataset/reports/foreign_review.html`, then `python scripts/dataset/purge_foreign.py --apply` deletes those files, the keremberke download and the old exports holding it. After that, `export_yolo.py --split v1/v2` and `train_annotator.py` (uses `yolo_manual`) can no longer be re-run.
+- **Known label defects in v4** (`dataset/annotations/label_defects.json`): 93 boxes around a whole vehicle in 92 images that also have a correct plate box, 17 more vehicle-sized boxes with no plate box (all `rf_ilpd_khhkb`, train), and at least 13 boxes on things that are not plates, one of them in **test** (a CRETA badge). QC does not catch these. Fix them, then freeze v5, before any reported training run.
+
+## Update 2026-10-14 (later): split v3 - Indian plates only (superseded)
 - User decision: only Indian number plates. `split_v3.json` excludes keremberke (8,823 mixed-country images) and every auto-labelled image that is multi-box, human-rejected, or not verified Indian (IVDB `cars_*` contains US plates). Details: `procedural documentation/phase1_step4_human_review_and_indian_only_v3.md`.
 - Current dataset: `dataset/frozen/dataset_v3.zip` - train 4,320 / val 281 / test 281 images; QC clean, 0 leakage. v2 is superseded (kept as history).
 - Caveat: nationality/box checks are single-reviewer visual judgements; independent Indian images are fewer than 4.3k (2,254 within-train near-duplicate pairs).

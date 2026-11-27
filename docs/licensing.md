@@ -14,6 +14,13 @@ Not used yet / candidates: Roboflow Indian sets (CC BY 4.0, need API key), Kaggl
 
 Citation reminders: FGD (Yang et al., CVPR 2022) must be cited in the report; it is not an original contribution of this project.
 
+Update 2026-11-27: keremberke is not used (Indian-only rule) and is scheduled for deletion. YOLO-World (planned annotation helper) is not yet downloaded; record its weights, version and licence here when it is.
+
+| Reference data | Source | Licence | Use |
+|---|---|---|---|
+| RTO office names in `configs/plate_codes.json` | Wikipedia contributors, [List of Regional Transport Office districts in India](https://en.wikipedia.org/wiki/List_of_Regional_Transport_Office_districts_in_India), revision 1387078165, retrieved 2026-11-27 | CC BY-SA 4.0: attribute, and share the adapted table under the same licence | plate decoding; code and office columns extracted, markup removed |
+| `AN01`, `AN02` | third-party listings (URLs in the JSON) | facts only, unverified | plate decoding |
+
 ## External candidates - licence check 2026-10-05 (metadata only, NOT downloaded)
 | Candidate | Size | Licence as listed | Verdict |
 |---|---|---|---|

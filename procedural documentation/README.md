@@ -28,3 +28,6 @@ A record of exactly what was done, and how, for every task in this project. One 
 | `phase1_step4_human_review_and_indian_only_v3.md` | Review queue decisions, nationality check, Indian-only split v3 + dataset_v3 frozen | 2026-10-14 |
 | `phase2_local_env_ultralytics_cpu_smoke.md` | Local venv (ultralytics + CPU torch), model load, 1-epoch CPU smoke test | 2026-10-14 |
 | `design_sample_ui_mockups.md` | Sample Android UI mockups (7 screens + palette) in design/ui_samples | 2026-10-14 |
+| `phase1_step6_audit_foreign_cleanup_v4.md` | Re-audit, foreign-image list (deletion pending), dataset_v4, label defects, plate-decoding spec | 2026-11-27 |
+| `phase5_prep_rto_code_table.md` | RTO office table for all states in configs/plate_codes.json | 2026-11-27 |
+| `repo_push_to_github.md` | Pushed the project to GitHub for the team; what is and is not included | 2026-11-27 |
