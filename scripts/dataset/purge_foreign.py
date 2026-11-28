@@ -6,6 +6,7 @@ Also removes the mixed-country keremberke download and the superseded exports th
   python scripts/dataset/purge_foreign.py               # dry run: report only, writes nothing
   python scripts/dataset/purge_foreign.py --split-only  # write split_v4.json; deletes nothing
   python scripts/dataset/purge_foreign.py --apply       # delete (not reversible)
+  python scripts/dataset/purge_foreign.py --ids foreign_ids_round2.json --apply   # a later review round
 
 --apply also removes the records and recognition rows of deleted images (backups: *.bak_pre_purge).
 split_v4 = split_v3 with every listed id marked 'excluded'; it is never overwritten once written (a frozen
@@ -77,9 +78,12 @@ def main() -> None:
     mode = ap.add_mutually_exclusive_group()
     mode.add_argument("--apply", action="store_true")
     mode.add_argument("--split-only", action="store_true")
+    ap.add_argument("--ids", default="foreign_ids.json", help="id list in dataset/annotations (later rounds use their own file)")
     a = ap.parse_args()
+    # later rounds keep their own backups and log so the first round's are not overwritten
+    tag = "" if a.ids == "foreign_ids.json" else "_" + Path(a.ids).stem
 
-    foreign: dict[str, str] = json.loads((ANNOT / "foreign_ids.json").read_text(encoding="utf-8"))
+    foreign: dict[str, str] = json.loads((ANNOT / a.ids).read_text(encoding="utf-8"))
     tables = {n: read_jsonl(PROCESSED / n) for n in RECORD_FILES}
     doomed = set(foreign)
     doomed |= {r["id"] for rows in tables.values() for r in rows if r["source"] == MIXED_SOURCE}
@@ -144,16 +148,16 @@ def main() -> None:
 
     for name, rows in tables.items():
         path = PROCESSED / name
-        shutil.copy2(path, path.with_suffix(".jsonl.bak_pre_purge"))
+        shutil.copy2(path, path.with_suffix(f".jsonl.bak_pre_purge{tag}"))
         write_jsonl(path, [r for r in rows if r["id"] not in doomed])
     rec = ANNOT / "recognition_manual.jsonl"
     rec_rows = read_jsonl(rec)
-    shutil.copy2(rec, rec.with_suffix(".jsonl.bak_pre_purge"))
+    shutil.copy2(rec, rec.with_suffix(f".jsonl.bak_pre_purge{tag}"))
     summary["recognition_rows_removed"] = len(rec_rows) - write_jsonl(
         rec, [r for r in rec_rows if r["image_id"] not in doomed])
 
     write_split_v4(doomed)
-    (REPORTS / "purge_foreign_log.json").write_text(
+    (REPORTS / f"purge_foreign_log{tag}.json").write_text(
         json.dumps({"summary": summary, "foreign": foreign, "deleted_files": deleted}, indent=1))
     print("done; recognition rows removed:", summary["recognition_rows_removed"])
 

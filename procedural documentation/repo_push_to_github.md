@@ -22,5 +22,14 @@ Push the project (docs, procedural documentation, design, scripts and other file
 
 ## Notes for the team
 - Dataset links in the documents do not work from a clone; the data has to be shared separately.
-- `colab/train_colab_skeleton.ipynb` still points to dataset_v3 and has a placeholder repository URL.
 - The notebook and one procedural record contain the ID of the Drive folder used for the dataset. Keep that folder shared only with named accounts.
+
+## Update 2026-11-28: second push
+Owner instruction: commit and push the day's changes.
+1. `git fetch`; `master` was level with `origin/master`.
+2. Searched the changed and new files for keys and tokens: none found. Largest file: 11 KB.
+3. Ran the tests, committed on `master` and ran `git push origin master`.
+
+Contents: Phase 1 steps 7 and 8 (foreign and unused file removal, `archive_dataset` extraction, label fixes, YOLO-World annotation script, dataset_v5 records), `docs/setup_android_colab.md`, `requirements-local-gpu.txt`, the updated Colab notebook (dataset_v5, token from Colab Secrets), and removal of `requirements.txt` and five one-off scripts (still in git history).
+
+`.venv-gpu/` was added to `.gitignore`.

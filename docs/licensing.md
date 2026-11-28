@@ -14,7 +14,12 @@ Not used yet / candidates: Roboflow Indian sets (CC BY 4.0, need API key), Kaggl
 
 Citation reminders: FGD (Yang et al., CVPR 2022) must be cited in the report; it is not an original contribution of this project.
 
-Update 2026-11-27: keremberke is not used (Indian-only rule) and is scheduled for deletion. YOLO-World (planned annotation helper) is not yet downloaded; record its weights, version and licence here when it is.
+Update 2026-11-28: keremberke has been deleted (Indian-only rule).
+
+| Annotation helper (2026-11-28) | Source | Licence | Use |
+|---|---|---|---|
+| YOLO-World v2 weights `yolov8l-worldv2.pt`, `yolov8x-worldv2.pt` | Ultralytics assets, loaded with ultralytics 8.4.177; original work Cheng et al., "YOLO-World", CVPR 2024 | Ultralytics distribution: AGPL-3.0; upstream repository: GPL-3.0 (re-verify before redistribution) | comparison annotations in `dataset/annotations/yoloworld/`; not used as training labels |
+| CLIP text encoder (`github.com/ultralytics/CLIP`, commit 7ffa84b) | fork of OpenAI CLIP | MIT | text prompts for YOLO-World |
 
 | Reference data | Source | Licence | Use |
 |---|---|---|---|

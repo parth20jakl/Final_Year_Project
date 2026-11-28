@@ -1,0 +1,11 @@
+# Local GPU environment (.venv-gpu) for YOLO-World annotation on the RTX 2050.
+# Python 3.11; these CUDA 11.8 builds work with NVIDIA driver 528.20.
+#   py -3.11 -m venv .venv-gpu
+#   .venv-gpu\Scripts\python -m pip install torch==2.5.1+cu118 torchvision==0.20.1+cu118 --index-url https://download.pytorch.org/whl/cu118
+#   .venv-gpu\Scripts\python -m pip install -r requirements-local-gpu.txt
+ultralytics==8.4.177
+ftfy==6.3.1
+regex==2026.11.25
+pytest==9.2.0
+PyYAML==6.0.4
+clip @ git+https://github.com/ultralytics/CLIP.git@7ffa84b3bfa40c42ecc1c77147a855e69cb2dd40

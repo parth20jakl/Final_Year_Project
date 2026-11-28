@@ -31,3 +31,5 @@ A record of exactly what was done, and how, for every task in this project. One 
 | `phase1_step6_audit_foreign_cleanup_v4.md` | Re-audit, foreign-image list (deletion pending), dataset_v4, label defects, plate-decoding spec | 2026-11-27 |
 | `phase5_prep_rto_code_table.md` | RTO office table for all states in configs/plate_codes.json | 2026-11-27 |
 | `repo_push_to_github.md` | Pushed the project to GitHub for the team; what is and is not included | 2026-11-27 |
+| `phase1_step7_deletion_and_archive_dataset.md` | Foreign and unused files deleted; Indian-only `archive_dataset` extracted | 2026-11-28 |
+| `phase1_step8_label_fixes_yoloworld_v5.md` | YOLO-World annotation, label fixes, dataset_v5 frozen, setup guide | 2026-11-28 |

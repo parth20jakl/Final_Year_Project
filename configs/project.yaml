@@ -4,9 +4,9 @@ project:
   seed: 42
   class_names: [license_plate]
 dataset:
-  version: v4            # Indian plates only; known label defects, fix before reported training (docs/dataset.md)
-  split_file: dataset/splits/split_v4.json
-  yolo_root: dataset/processed/yolo_v4
+  version: v5            # Indian plates only; label fixes of 2026-11-28 (docs/dataset.md)
+  split_file: dataset/splits/split_v5.json
+  yolo_root: dataset/processed/yolo_v5
   imgsz: 640
   max_side_export: 1280
 compute:

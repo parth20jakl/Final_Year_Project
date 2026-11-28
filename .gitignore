@@ -46,3 +46,5 @@ weights/
 .claude/
 # local training venv
 .venv-train/
+# local GPU venv (YOLO-World annotation)
+.venv-gpu/
